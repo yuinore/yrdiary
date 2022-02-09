@@ -6,8 +6,10 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --config tools/webpack/webpack.config.dev.js",
     "build": "cross-env NODE_ENV=production webpack --config tools/webpack/webpack.config.prod.js",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
-    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src/"
+    "lint": "eslint --ext .ts,.tsx ./src",
+    "fix": "yarn format && yarn lint:fix",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "devDependencies": {
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
