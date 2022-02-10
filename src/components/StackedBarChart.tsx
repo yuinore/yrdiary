@@ -20,7 +20,9 @@ export const options = {
   //colors: ['#ff8888', '#ffcc66'],
 };
 
-function StackedBarChart(props: { args }): JSX.Element {
+function StackedBarChart(props: {
+  args: Array<string | Array<string> | Array<Array<number>>>;
+}): JSX.Element {
   if (props.args === undefined) {
     return <div></div>;
   }
@@ -33,7 +35,9 @@ function StackedBarChart(props: { args }): JSX.Element {
 
   const data2 = [
     ['', ...series_label],
-    ...transpose_table(data_arr).map((d, i) => [labels[i], ...d]),
+    ...transpose_table(data_arr as Array<Array<number>>).map(
+      (d: Array<number>, i: number) => [labels[i], ...d],
+    ),
   ];
 
   return (
@@ -49,7 +53,7 @@ function StackedBarChart(props: { args }): JSX.Element {
   );
 }
 
-function transpose_table(array) {
+function transpose_table(array: Array<Array<number>>) {
   return array[0].map((col, i) => array.map((row) => row[i]));
 }
 
