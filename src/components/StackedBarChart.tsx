@@ -16,11 +16,23 @@ export const options = {
     subtitle: 'Powered by React Google Charts',
   },
   isStacked: true,
-  colors: ['#f88888', '#f8bb66', '#ddcc00', '#88dd88', '#88dddd', '#44aaee', '#7777f8', '#dd66dd', '#dddddd', '#aaaaaa', '#666666'],
+  colors: [
+    '#f88888',
+    '#f8bb66',
+    '#ddcc00',
+    '#88dd88',
+    '#88dddd',
+    '#44aaee',
+    '#7777f8',
+    '#dd66dd',
+    '#dddddd',
+    '#aaaaaa',
+    '#666666',
+  ],
   showToolTip: true,
 
-  bar: { groupWidth: "85%" },
-  legend: { position: "top" },
+  bar: { groupWidth: '85%' },
+  legend: { position: 'top' },
 };
 
 function StackedBarChart(props: {
