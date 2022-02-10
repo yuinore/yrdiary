@@ -20,23 +20,19 @@ function Hello(): JSX.Element {
       (arr) => `${(arr[0] as Date).getMonth() + 1}/${(arr[0] as Date).getDate()}`,
     );
     // const data = csv.map(arr => get_value_by_xpath_or_default(arr[1], "_"))
-    setChartArgs1([
-      ...calc_daily_chart_data_by_xpath(csv, '_'),
-    ]);
-    setChartArgs2([
-      ...calc_daily_chart_data_group_by_categories(csv, '_'),
-    ]);
+    setChartArgs1([...calc_daily_chart_data_by_xpath(csv, '_')]);
+    setChartArgs2([...calc_daily_chart_data_group_by_categories(csv, '_')]);
     setChartArgs3([
       ...calc_daily_chart_data_group_by_categories(csv, '_', true),
     ]);
     setChartArgs5([
-      ...calc_period_chart_data_group_by_categories(csv, "_", week_mapper)
+      ...calc_period_chart_data_group_by_categories(csv, '_', week_mapper),
     ]);
     setChartArgs4([
-      ...calc_period_chart_data_group_by_none(csv, "_", week_mapper)
+      ...calc_period_chart_data_group_by_none(csv, '_', week_mapper),
     ]);
     setChartArgs8([
-      ...calc_period_chart_data_group_by_none(csv, "_", month_mapper)
+      ...calc_period_chart_data_group_by_none(csv, '_', month_mapper),
     ]);
   };
 
@@ -209,7 +205,7 @@ function calc_daily_chart_data_group_by_categories(
 // 週のはじめ（月曜日）を取得
 function week_mapper(d) {
   d = new Date(d);
-  var diff = d.getDate() - (d.getDay() + 6) % 7;
+  const diff = d.getDate() - ((d.getDay() + 6) % 7);
   d.setDate(diff);
   return d;
 }
@@ -222,76 +218,134 @@ function month_mapper(d) {
 }
 
 // 曜日でグルーピング
-function calc_period_chart_data_group_by_weekday(all_history, xpath, cf, lab2, period_mapper) {
-  var selector_func = (arr_date, arr_obj, xpath, category_index, category) => {
+function calc_period_chart_data_group_by_weekday(
+  all_history,
+  xpath,
+  cf,
+  lab2,
+  period_mapper,
+) {
+  const selector_func = (
+    arr_date,
+    arr_obj,
+    xpath,
+    category_index,
+    category,
+  ) => {
     if (category_index == cf((arr_date.getDay() + 6) % 7)) {
       return get_value_by_xpath_or_default(arr_obj, xpath);
     }
     return 0;
-  }
+  };
 
-  return calc_chart_data_group_by_category_with_selector(all_history, xpath, lab2, selector_func, period_mapper);
+  return calc_chart_data_group_by_category_with_selector(
+    all_history,
+    xpath,
+    lab2,
+    selector_func,
+    period_mapper,
+  );
 }
 
 // グルーピングしない
-function calc_period_chart_data_group_by_none(all_history, xpath, period_mapper) {
-  var lab2 = ["total"];
-  var selector_func = (arr_date, arr_obj, xpath, category_index, category) => {
-    return get_value_by_xpath_or_default(arr_obj, xpath);
-  }
+function calc_period_chart_data_group_by_none(
+  all_history,
+  xpath,
+  period_mapper,
+) {
+  const lab2 = ['total'];
+  const selector_func = (arr_date, arr_obj, xpath, category_index, category) => get_value_by_xpath_or_default(arr_obj, xpath);
 
-  return calc_chart_data_group_by_category_with_selector(all_history, xpath, lab2, selector_func, period_mapper);
+  return calc_chart_data_group_by_category_with_selector(
+    all_history,
+    xpath,
+    lab2,
+    selector_func,
+    period_mapper,
+  );
 }
 
 // 第一階層のキーでグルーピング
-function calc_period_chart_data_group_by_categories(all_history, xpath, period_mapper) {
-  var lab2 = extract_categories_from_all_history(all_history);
-  var selector_func = (arr_date, arr_obj, xpath, category_index, category) => {
-    return get_value_by_xpath_or_default(arr_obj, category + "._", null) || get_value_by_xpath_or_default(arr_obj, category);
-  }
+function calc_period_chart_data_group_by_categories(
+  all_history,
+  xpath,
+  period_mapper,
+) {
+  const lab2 = extract_categories_from_all_history(all_history);
+  const selector_func = (arr_date, arr_obj, xpath, category_index, category) => get_value_by_xpath_or_default(arr_obj, `${category}._`, null)
+    || get_value_by_xpath_or_default(arr_obj, category);
 
-  return calc_chart_data_group_by_category_with_selector(all_history, xpath, lab2, selector_func, period_mapper);
+  return calc_chart_data_group_by_category_with_selector(
+    all_history,
+    xpath,
+    lab2,
+    selector_func,
+    period_mapper,
+  );
 }
 
 // -----------------------------------------------------------
 
 // Note: xpath は selector_func の引数としてしか使用していない
-function calc_chart_data_group_by_category_with_selector(all_history, xpath, lab2, selector_func, period_mapper) {
-  var labels = all_history.map(arr => (arr[0].getMonth() + 1) + "/" + arr[0].getDate());
-  var data_arr = lab2.map((category, category_index) => all_history.map(arr => selector_func(arr[0], arr[1], xpath, category_index, category)));
+function calc_chart_data_group_by_category_with_selector(
+  all_history,
+  xpath,
+  lab2,
+  selector_func,
+  period_mapper,
+) {
+  const labels = all_history.map(
+    (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
+  );
+  const data_arr = lab2.map((category, category_index) => all_history.map((arr) => selector_func(arr[0], arr[1], xpath, category_index, category)));
 
-  var d_from = new Date(2021, 1 - 1, 1);
-  var d_to = new Date(2021, all_history[all_history.length - 1][0].getMonth(), all_history[all_history.length - 1][0].getDate());
+  const d_from = new Date(2021, 1 - 1, 1);
+  const d_to = new Date(
+    2021,
+    all_history[all_history.length - 1][0].getMonth(),
+    all_history[all_history.length - 1][0].getDate(),
+  );
 
-  var dict = lab2.map(_ => ({}));
-  var dict_week = lab2.map(_ => ({}));
-  var data_arr2 = lab2.map(_ => ({}));
+  const dict = lab2.map((_) => ({}));
+  const dict_week = lab2.map((_) => ({}));
+  const data_arr2 = lab2.map((_) => ({}));
 
   for (var c_i = 0; c_i < lab2.length; c_i++) {
-    for (var day = new Date(d_from.getTime()); day <= d_to; day.setDate(day.getDate() + 1)) {
+    for (
+      var day = new Date(d_from.getTime());
+      day <= d_to;
+      day.setDate(day.getDate() + 1)
+    ) {
       dict_week[c_i][d_f_d(period_mapper(day))] = 0;
     }
   }
 
   for (var c_i = 0; c_i < lab2.length; c_i++) {
-    labels.forEach((x, i) => dict[c_i][x] = data_arr[c_i][i]);
+    labels.forEach((x, i) => (dict[c_i][x] = data_arr[c_i][i]));
 
-    for (var day = new Date(d_from.getTime()); day <= d_to; day.setDate(day.getDate() + 1)) {
-      dict_week[c_i][d_f_d(period_mapper(day))] = (dict_week[c_i][d_f_d(period_mapper(day))] || 0) + (dict[c_i][d_f_d(day)] || 0);
+    for (
+      var day = new Date(d_from.getTime());
+      day <= d_to;
+      day.setDate(day.getDate() + 1)
+    ) {
+      dict_week[c_i][d_f_d(period_mapper(day))] = (dict_week[c_i][d_f_d(period_mapper(day))] || 0)
+        + (dict[c_i][d_f_d(day)] || 0);
     }
 
     // update!!
-    data_arr2[c_i] = Object.values(dict_week[c_i]).map(x => Math.round(x / 60 * 100) / 100);
+    data_arr2[c_i] = Object.values(dict_week[c_i]).map(
+      (x) => Math.round((x / 60) * 100) / 100,
+    );
   }
 
-  var labels2 = Object.keys(dict_week[0]).map(x => x + "〜");
+  const labels2 = Object.keys(dict_week[0]).map((x) => `${x}〜`);
 
   return [labels2, data_arr2, lab2];
 }
 
 // Date オブジェクトを "MM/dd" 形式の文字列に変換
 function d_f_d(date_object) {
-  return (date_object.getMonth() + 1) + "/" + date_object.getDate();
+  return `${date_object.getMonth() + 1}/${date_object.getDate()}`;
 }
 
 export default Hello;

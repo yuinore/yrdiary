@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import StackedBarChart from './StackedBarChart';
 
-function BarChart(props: {
-  args: Array<string[] | number[]>;
-}): JSX.Element {
+function BarChart(props: { args: Array<string[] | number[]> }): JSX.Element {
   const { args } = props;
 
   return (
