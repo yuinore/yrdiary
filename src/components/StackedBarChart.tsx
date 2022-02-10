@@ -16,8 +16,7 @@ export const options = {
     subtitle: 'Powered by React Google Charts',
   },
   isStacked: true,
-
-  // colors: ['#ff8888', '#ffcc66'],
+  colors: ['#f88888', '#f8bb66', '#ddcc00', '#88dd88', '#88dddd', '#44aaee', '#7777f8', '#dd66dd', '#dddddd', '#aaaaaa', '#666666'],
 };
 
 function StackedBarChart(props: {
