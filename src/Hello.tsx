@@ -3,6 +3,7 @@ import { Chart } from 'react-google-charts';
 import ApiFetch from './components/ApiFetch';
 import BarChart from './components/BarChart';
 import StackedBarChart from './components/StackedBarChart';
+import ApexStackedBarChart from './components/ApexStackedBarChart';
 
 function Hello(): JSX.Element {
   const [chartArgs1, setChartArgs1] = useState([]);
@@ -39,6 +40,7 @@ function Hello(): JSX.Element {
   return (
     <div>
       <h1>yrdiary</h1>
+      <ApexStackedBarChart />
       <BarChart args={chartArgs1} />
       <StackedBarChart args={chartArgs2} />
       <StackedBarChart args={chartArgs3} />
