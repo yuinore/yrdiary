@@ -43,10 +43,10 @@ function StackedBarChart(props: {
   return (
     <div>
       <Chart
-        chartType='ColumnChart'
+        chartType="ColumnChart"
         data={data2}
-        width='100%'
-        height='400px'
+        width="100%"
+        height="400px"
         options={options}
       />
     </div>

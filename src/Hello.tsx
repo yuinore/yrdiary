@@ -109,7 +109,7 @@ function extract_categories_from_all_history(
 function calc_daily_chart_data_group_by_categories(
   all_history: any[][],
   xpath: string,
-  cumulative: boolean = false,
+  cumulative = false,
   date_from: Date = null,
 ) {
   const labels = all_history.map(
@@ -118,19 +118,15 @@ function calc_daily_chart_data_group_by_categories(
   let sum3 = 0;
 
   const categories = extract_categories_from_all_history(all_history);
-  let data_arr = categories.map((category) =>
-    all_history.map(
-      (arr) =>
-        get_value_by_xpath_or_default(arr[1], `${category}._`, null) ||
-        get_value_by_xpath_or_default(arr[1], category),
-    ),
-  );
+  let data_arr = categories.map((category) => all_history.map(
+    (arr) => get_value_by_xpath_or_default(arr[1], `${category}._`, null)
+        || get_value_by_xpath_or_default(arr[1], category),
+  ));
 
   data_arr = data_arr.map((data) => {
     sum3 = 0;
     return data.map(
-      (x) =>
-        Math.round(((sum3 = sum3 * (cumulative ? 1 : 0) + x) / 60) * 100) / 100,
+      (x) => Math.round(((sum3 = sum3 * (cumulative ? 1 : 0) + x) / 60) * 100) / 100,
     );
   });
 
