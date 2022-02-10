@@ -7,13 +7,13 @@ function Hello(): JSX.Element {
   const [chartArgs, setChartArgs] = useState([]);
 
   const onLoadData = (markdown: string) => {
-    //alert("onLoadData");
+    // alert("onLoadData");
     // setRawMarkdown(markdown);
     const csv = find_all_history_with_date(markdown);
     const labels = csv.map(
-      (arr) => arr[0].getMonth() + 1 + '/' + arr[0].getDate(),
+      (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
     );
-    //const data = csv.map(arr => get_value_by_xpath_or_default(arr[1], "_"))
+    // const data = csv.map(arr => get_value_by_xpath_or_default(arr[1], "_"))
     const chart_args = [
       'myChart6',
       'bar',
@@ -35,7 +35,7 @@ function Hello(): JSX.Element {
 // Do you need to change your target library?
 // Try changing the `lib` compiler option to 'es2020' or later.
 function matchAll(text: string, re: RegExp) {
-  let array = [];
+  const array = [];
   let match;
 
   while ((match = re.exec(text))) {
@@ -48,14 +48,14 @@ function matchAll(text: string, re: RegExp) {
 // markdown からすべての履歴を日付付きで抽出します
 // any[][] に型推論されてる？
 function find_all_history_with_date(text: string) {
-  var matches = Array.from(matchAll(text, /- ?([0-9]+)\/([0-9]+) ?({_:.+})/g));
+  const matches = Array.from(
+    matchAll(text, /- ?([0-9]+)\/([0-9]+) ?({_:.+})/g),
+  );
   return Array.from(
-    matches.map((x) => {
-      return [
-        new Date(2021, Number(x[1]) - 1, Number(x[2]) - 0),
-        eval('(' + x[3] + ')'),
-      ];
-    }),
+    matches.map((x) => [
+      new Date(2021, Number(x[1]) - 1, Number(x[2]) - 0),
+      eval(`(${x[3]})`),
+    ]),
   );
 }
 
@@ -71,33 +71,32 @@ function get_value_by_xpath_or_default<T>(
 
   if (keys.length <= 1) {
     return obj[keys[0] as keyof {}] || def_val;
-  } else {
-    return get_value_by_xpath_or_default(
-      obj[keys[0] as keyof {}] || {},
-      keys.slice(1),
-      def_val,
-    );
   }
+  return get_value_by_xpath_or_default(
+    obj[keys[0] as keyof {}] || {},
+    keys.slice(1),
+    def_val,
+  );
 }
 
 function is_string(x: any) {
-  return typeof x == 'string' || x instanceof String;
+  return typeof x === 'string' || x instanceof String;
 }
 
 function extract_categories_from_all_history(
   all_history: Array<Array<string | {}>>,
 ) {
-  var categories = new Set(
+  const categories = new Set(
     all_history
       .map((arr) => Object.keys(arr[1]))
       .reduce((x, y) => Array.from(new Set([...x, ...y]))),
   );
   categories.delete('_');
   categories.delete('pigeon');
-  //categories.delete("trio");
-  //categories.delete("neko4");
-  //categories.delete("fuyu");
-  //categories.delete("candy");
+  // categories.delete("trio");
+  // categories.delete("neko4");
+  // categories.delete("fuyu");
+  // categories.delete("candy");
   categories.delete('megu');
   categories.delete('trio2');
 
@@ -113,16 +112,16 @@ function calc_daily_chart_data_group_by_categories(
   cumulative: boolean = false,
   date_from: Date = null,
 ) {
-  var labels = all_history.map(
-    (arr) => arr[0].getMonth() + 1 + '/' + arr[0].getDate(),
+  const labels = all_history.map(
+    (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
   );
-  var sum3 = 0;
+  let sum3 = 0;
 
-  var categories = extract_categories_from_all_history(all_history);
-  var data_arr = categories.map((category) =>
+  const categories = extract_categories_from_all_history(all_history);
+  let data_arr = categories.map((category) =>
     all_history.map(
       (arr) =>
-        get_value_by_xpath_or_default(arr[1], category + '._', null) ||
+        get_value_by_xpath_or_default(arr[1], `${category}._`, null) ||
         get_value_by_xpath_or_default(arr[1], category),
     ),
   );
@@ -131,8 +130,7 @@ function calc_daily_chart_data_group_by_categories(
     sum3 = 0;
     return data.map(
       (x) =>
-        Math.round(((sum3 = sum3 * (!!cumulative ? 1 : 0) + x) / 60) * 100) /
-        100,
+        Math.round(((sum3 = sum3 * (cumulative ? 1 : 0) + x) / 60) * 100) / 100,
     );
   });
 

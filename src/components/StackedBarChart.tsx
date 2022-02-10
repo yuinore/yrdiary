@@ -17,20 +17,20 @@ export const options = {
   },
   isStacked: true,
 
-  //colors: ['#ff8888', '#ffcc66'],
+  // colors: ['#ff8888', '#ffcc66'],
 };
 
 function StackedBarChart(props: {
   args: Array<string | Array<string> | Array<Array<number>>>;
 }): JSX.Element {
   if (props.args === undefined) {
-    return <div></div>;
+    return <div />;
   }
 
   const [canvas_name, chart_type, labels, data_arr, series_label] = props.args;
 
   if (canvas_name === undefined) {
-    return <div></div>;
+    return <div />;
   }
 
   const data2 = [

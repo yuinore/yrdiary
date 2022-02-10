@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const ApiFetch = (props: { callback: (data: string) => void }) => {
-  const url =
-    'https://yuinore.moe/30thou_2021.csv?rand=' + new Date().getTime();
+function ApiFetch(props: { callback: (data: string) => void }) {
+  const url = `https://yuinore.moe/30thou_2021.csv?rand=${new Date().getTime()}`;
 
   useEffect(() => {
     fetch(url, { method: 'GET' })
@@ -13,6 +12,6 @@ const ApiFetch = (props: { callback: (data: string) => void }) => {
   }, []);
 
   return <div />;
-};
+}
 
 export default ApiFetch;
