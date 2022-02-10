@@ -1,9 +1,25 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
 
+const CHART_FILL_COLORS = [
+  '#f85555',
+  '#f89922',
+  '#f8d000',
+  '#44cc55',
+  '#99d0ee',
+  '#44aaee',
+  '#7777f8',
+  '#dd66dd',
+  '#f8aacc',
+  '#aaaaaa',
+  '#666666',
+];
+
 class ApexStackedBarChart extends React.Component {
   constructor(props) {
     super(props);
+
+    const chartId = `chart_${Math.random().toString(36).substring(2)}`;
 
     this.state = {
       series: [
@@ -26,67 +42,105 @@ class ApexStackedBarChart extends React.Component {
       ],
       options: {
         chart: {
-          type: 'bar',
-          height: 350,
+          id: `${chartId}_bar`,
           stacked: true,
-          toolbar: {
-            show: true,
-          },
-          zoom: {
-            enabled: true,
-          },
+          animations: { enabled: true },
+          toolbar: { show: false },
         },
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              legend: {
-                position: 'bottom',
-                offsetX: -10,
-                offsetY: 0,
-              },
-            },
-          },
-        ],
         plotOptions: {
           bar: {
-            horizontal: false,
-            borderRadius: 10,
+            columnWidth: '85%',
           },
         },
         xaxis: {
           type: 'datetime',
           categories: [
-            '01/01/2011 GMT',
-            '01/02/2011 GMT',
-            '01/03/2011 GMT',
-            '01/04/2011 GMT',
-            '01/05/2011 GMT',
-            '01/06/2011 GMT',
+            new Date('12/31/2010 GMT').getTime(),
+            new Date('01/01/2011 GMT').getTime(),
+            new Date('01/02/2011 GMT').getTime(),
+            new Date('01/03/2011 GMT').getTime(),
+            new Date('01/04/2011 GMT').getTime(),
+            new Date('01/05/2011 GMT').getTime(),
           ],
+          labels: {
+            formatter: (value) => {
+              return ((new Date(value)).getMonth() + 1) + "/" + (new Date(value)).getDate();
+            }
+          },
         },
         legend: {
-          position: 'right',
-          offsetY: 40,
+          show: true,
+          position: 'top',
+          offsetY: 0,
         },
+        colors: CHART_FILL_COLORS,
         fill: {
           opacity: 1,
         },
+      },
+      optionsBrush: {
+        chart: {
+          id: `${chartId}_brush`,
+          stacked: true,
+          animations: { enabled: true },
+          toolbar: { show: false },
+          selection: { enabled: true },
+          brush: {
+            enabled: true,
+            target: `${chartId}_bar`,
+          },
+        },
+        stroke: {
+          curve: 'straight',
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: [
+            new Date('12/31/2010 GMT').getTime(),
+            new Date('01/01/2011 GMT').getTime(),
+            new Date('01/02/2011 GMT').getTime(),
+            new Date('01/03/2011 GMT').getTime(),
+            new Date('01/04/2011 GMT').getTime(),
+            new Date('01/05/2011 GMT').getTime(),
+          ],
+          labels: {
+            formatter: (value) => {
+              return ((new Date(value)).getMonth() + 1) + "/" + (new Date(value)).getDate();
+            }
+          },
+          tooltip: { enabled: false },
+        },
+        legend: { show: false },
+        colors: CHART_FILL_COLORS,
       },
     };
   }
 
   render() {
     return (
-      <div className="app">
-        <div className="row">
-          <div className="mixed-chart">
-            <Chart
-              options={this.state.options}
-              series={this.state.series}
-              type="bar"
-              height={350}
-            />
+      <div>
+        <div className="app">
+          <div className="row">
+            <div className="mixed-chart">
+              <Chart
+                options={this.state.options}
+                series={this.state.series}
+                type="bar"
+                height={450}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="app">
+          <div className="row">
+            <div className="mixed-chart">
+              <Chart
+                options={this.state.optionsBrush}
+                series={this.state.series}
+                type="area"
+                height={150}
+              />
+            </div>
           </div>
         </div>
       </div>
