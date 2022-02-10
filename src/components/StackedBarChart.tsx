@@ -38,11 +38,13 @@ export const options = {
 function StackedBarChart(props: {
   args: Array<string | string[] | number[][]>;
 }): JSX.Element {
-  if (props.args === undefined) {
+  const { args } = props;
+
+  if (args === undefined) {
     return <div />;
   }
 
-  const [canvas_name, chart_type, labels, data_arr, series_label] = props.args;
+  const [canvas_name, chart_type, labels, data_arr, series_label] = args;
 
   if (canvas_name === undefined) {
     return <div />;
