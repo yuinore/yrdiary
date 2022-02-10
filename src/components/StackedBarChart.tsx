@@ -36,7 +36,7 @@ export const options = {
 };
 
 function StackedBarChart(props: {
-  args: Array<string | string[] | number[][]>;
+  args: Array<string[] | number[][]>;
 }): JSX.Element {
   const { args } = props;
 
@@ -44,9 +44,10 @@ function StackedBarChart(props: {
     return <div />;
   }
 
-  const [canvas_name, chart_type, labels, data_arr, series_label] = args;
+  // const [canvas_name, chart_type, labels, data_arr, series_label] = args;
+  const [labels, data_arr, series_label] = args;
 
-  if (canvas_name === undefined) {
+  if (labels === undefined) {
     return <div />;
   }
 
