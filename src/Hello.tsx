@@ -75,11 +75,11 @@ function find_all_history_with_date(text: string) {
 
 function get_value_by_xpath_or_default(
   obj_: any,
-  keys_arg: string | Array<string>,
+  keys_arg: string | string[],
   def_val: any = null,
 ): any {
   const obj = obj_ as Record<string, any>;
-  let keys = keys_arg as Array<string>;
+  let keys = keys_arg as string[];
   if (is_string(keys_arg)) {
     keys = (keys_arg as string).split('.');
   }

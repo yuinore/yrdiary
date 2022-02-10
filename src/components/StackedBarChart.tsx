@@ -36,7 +36,7 @@ export const options = {
 };
 
 function StackedBarChart(props: {
-  args: Array<string | Array<string> | Array<Array<number>>>;
+  args: Array<string | string[] | number[][]>;
 }): JSX.Element {
   if (props.args === undefined) {
     return <div />;
@@ -50,8 +50,8 @@ function StackedBarChart(props: {
 
   const data2 = [
     ['', ...series_label],
-    ...transpose_table(data_arr as Array<Array<number>>).map(
-      (d: Array<number>, i: number) => [labels[i], ...d],
+    ...transpose_table(data_arr as number[][]).map(
+      (d: number[], i: number) => [labels[i], ...d],
     ),
   ];
 
@@ -68,7 +68,7 @@ function StackedBarChart(props: {
   );
 }
 
-function transpose_table(array: Array<Array<number>>) {
+function transpose_table(array: number[][]) {
   return array[0].map((col, i) => array.map((row) => row[i]));
 }
 

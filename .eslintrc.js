@@ -26,6 +26,10 @@ module.exports = {
     'react/jsx-filename-extension': [
       'error',
       { extensions: ['.jsx', '.tsx'] },
+    ],
+    "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
+    'camelcase': [
+      'off'
     ]
   },
 };
