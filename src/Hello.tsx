@@ -25,10 +25,10 @@ function Hello(): JSX.Element {
     setChartArgs3([
       ...calc_daily_chart_data_group_by_categories(csv, '_', true),
     ]);
-    setChartArgs5([
+    setChartArgs4([
       ...calc_period_chart_data_group_by_categories(csv, '_', week_mapper),
     ]);
-    setChartArgs4([
+    setChartArgs5([
       ...calc_period_chart_data_group_by_none(csv, '_', week_mapper),
     ]);
     setChartArgs8([
@@ -203,7 +203,7 @@ function calc_daily_chart_data_group_by_categories(
 // [calc_chart_data] カテゴリ別期間集計系
 
 // 週のはじめ（月曜日）を取得
-function week_mapper(d) {
+function week_mapper(d: Date) {
   d = new Date(d);
   const diff = d.getDate() - ((d.getDay() + 6) % 7);
   d.setDate(diff);
@@ -211,21 +211,31 @@ function week_mapper(d) {
 }
 
 // 月の初日を取得
-function month_mapper(d) {
+function month_mapper(d: Date) {
   d = new Date(d);
   d.setDate(1);
   return d;
 }
 
+type SelectorFunc = (
+  arr_date: Date,
+  arr_obj: any,
+  xpath: string,
+  category_index: number,
+  category: string,
+) => any;
+type PeriodMapper = (day: Date) => Date;
+
+/*
 // 曜日でグルーピング
 function calc_period_chart_data_group_by_weekday(
-  all_history,
-  xpath,
+  all_history: any[][],
+  xpath: string,
   cf,
-  lab2,
-  period_mapper,
+  lab2: string[],
+  period_mapper: PeriodMapper,
 ) {
-  const selector_func = (
+  const selector_func : SelectorFunc = (
     arr_date,
     arr_obj,
     xpath,
@@ -246,15 +256,22 @@ function calc_period_chart_data_group_by_weekday(
     period_mapper,
   );
 }
+*/
 
 // グルーピングしない
 function calc_period_chart_data_group_by_none(
-  all_history,
-  xpath,
-  period_mapper,
+  all_history: any[][],
+  xpath: string,
+  period_mapper: PeriodMapper,
 ) {
   const lab2 = ['total'];
-  const selector_func = (arr_date, arr_obj, xpath, category_index, category) => get_value_by_xpath_or_default(arr_obj, xpath);
+  const selector_func: SelectorFunc = (
+    arr_date,
+    arr_obj,
+    xpath,
+    category_index,
+    category,
+  ) => get_value_by_xpath_or_default(arr_obj, xpath);
 
   return calc_chart_data_group_by_category_with_selector(
     all_history,
@@ -267,12 +284,18 @@ function calc_period_chart_data_group_by_none(
 
 // 第一階層のキーでグルーピング
 function calc_period_chart_data_group_by_categories(
-  all_history,
-  xpath,
-  period_mapper,
+  all_history: any[][],
+  xpath: string,
+  period_mapper: PeriodMapper,
 ) {
   const lab2 = extract_categories_from_all_history(all_history);
-  const selector_func = (arr_date, arr_obj, xpath, category_index, category) => get_value_by_xpath_or_default(arr_obj, `${category}._`, null)
+  const selector_func: SelectorFunc = (
+    arr_date,
+    arr_obj,
+    xpath,
+    category_index,
+    category,
+  ) => get_value_by_xpath_or_default(arr_obj, `${category}._`, null)
     || get_value_by_xpath_or_default(arr_obj, category);
 
   return calc_chart_data_group_by_category_with_selector(
@@ -288,16 +311,16 @@ function calc_period_chart_data_group_by_categories(
 
 // Note: xpath は selector_func の引数としてしか使用していない
 function calc_chart_data_group_by_category_with_selector(
-  all_history,
-  xpath,
-  lab2,
-  selector_func,
-  period_mapper,
+  all_history: any[][],
+  xpath: string,
+  lab2: string[],
+  selector_func: SelectorFunc,
+  period_mapper: PeriodMapper,
 ) {
   const labels = all_history.map(
     (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
   );
-  const data_arr = lab2.map((category, category_index) => all_history.map((arr) => selector_func(arr[0], arr[1], xpath, category_index, category)));
+  const data_arr = lab2.map((category: string, category_index: number) => all_history.map((arr) => selector_func(arr[0], arr[1], xpath, category_index, category)));
 
   const d_from = new Date(2021, 1 - 1, 1);
   const d_to = new Date(
@@ -306,9 +329,9 @@ function calc_chart_data_group_by_category_with_selector(
     all_history[all_history.length - 1][0].getDate(),
   );
 
-  const dict = lab2.map((_) => ({}));
-  const dict_week = lab2.map((_) => ({}));
-  const data_arr2 = lab2.map((_) => ({}));
+  const dict = lab2.map((_): Record<string, number> => ({}));
+  const dict_week = lab2.map((_): Record<string, number> => ({}));
+  const data_arr2 = lab2.map((_): number[] => []);
 
   for (var c_i = 0; c_i < lab2.length; c_i++) {
     for (
@@ -343,8 +366,9 @@ function calc_chart_data_group_by_category_with_selector(
   return [labels2, data_arr2, lab2];
 }
 
+// object のキーとして使うため、
 // Date オブジェクトを "MM/dd" 形式の文字列に変換
-function d_f_d(date_object) {
+function d_f_d(date_object: Date) {
   return `${date_object.getMonth() + 1}/${date_object.getDate()}`;
 }
 
