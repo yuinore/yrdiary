@@ -73,21 +73,22 @@ function find_all_history_with_date(text: string) {
   );
 }
 
-function get_value_by_xpath_or_default<T>(
-  obj: {},
+function get_value_by_xpath_or_default(
+  obj_: any,
   keys_arg: string | Array<string>,
-  def_val: T = null,
-): T {
+  def_val: any = null,
+): any {
+  const obj = obj_ as Record<string, any>;
   let keys = keys_arg as Array<string>;
   if (is_string(keys_arg)) {
     keys = (keys_arg as string).split('.');
   }
 
   if (keys.length <= 1) {
-    return obj[keys[0] as keyof {}] || def_val;
+    return obj[keys[0]] || def_val;
   }
   return get_value_by_xpath_or_default(
-    obj[keys[0] as keyof {}] || {},
+    (obj[keys[0]] as Record<string, any>) || {},
     keys.slice(1),
     def_val,
   );
@@ -97,9 +98,7 @@ function is_string(x: any) {
   return typeof x === 'string' || x instanceof String;
 }
 
-function extract_categories_from_all_history(
-  all_history: Array<Array<string | {}>>,
-) {
+function extract_categories_from_all_history(all_history: any[][]) {
   const categories = new Set(
     all_history
       .map((arr) => Object.keys(arr[1]))
@@ -137,7 +136,7 @@ function calc_daily_chart_data_by_xpath(
   let labels = all_history.map(
     (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
   );
-  let data = all_history.map((arr) => get_value_by_xpath_or_default(arr[1], xpath));
+  let data = all_history.map((arr) => get_value_by_xpath_or_default(arr[1] as any[][], xpath));
   let sum3 = 0;
 
   // 期間を date_from 以降に制限
