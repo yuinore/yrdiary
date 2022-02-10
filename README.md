@@ -1,3 +1,6 @@
 # yrdiary
 
-share your diary, share your life.
+Share your diary, share your life.
+
+## demo
+https://yuinore.github.io/yrdiary/
