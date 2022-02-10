@@ -26,10 +26,10 @@ function Hello(): JSX.Element {
       ...calc_daily_chart_data_group_by_categories(csv, '_', true),
     ]);
     setChartArgs4([
-      ...calc_period_chart_data_group_by_categories(csv, '_', week_mapper),
+      ...calc_period_chart_data_group_by_none(csv, '_', week_mapper),
     ]);
     setChartArgs5([
-      ...calc_period_chart_data_group_by_none(csv, '_', week_mapper),
+      ...calc_period_chart_data_group_by_categories(csv, '_', week_mapper),
     ]);
     setChartArgs8([
       ...calc_period_chart_data_group_by_none(csv, '_', month_mapper),
