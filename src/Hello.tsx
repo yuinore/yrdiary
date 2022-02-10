@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Chart } from 'react-google-charts';
 import ApiFetch from './components/ApiFetch';
+import BarChart from './components/BarChart';
 import StackedBarChart from './components/StackedBarChart';
 
 function Hello(): JSX.Element {
-  const [chartArgs, setChartArgs] = useState([]);
+  const [chartArgs1, setChartArgs1] = useState([]);
+  const [chartArgs2, setChartArgs2] = useState([]);
+  const [chartArgs3, setChartArgs3] = useState([]);
 
   const onLoadData = (markdown: string) => {
     // alert("onLoadData");
@@ -14,18 +17,28 @@ function Hello(): JSX.Element {
       (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
     );
     // const data = csv.map(arr => get_value_by_xpath_or_default(arr[1], "_"))
-    const chart_args = [
+    setChartArgs1([
+      'myChart',
+      "bar",
+      ...calc_daily_chart_data_by_xpath(csv, "_")
+    ]);
+    setChartArgs2([
       'myChart6',
       'bar',
       ...calc_daily_chart_data_group_by_categories(csv, '_'),
-    ];
-
-    setChartArgs(chart_args);
+    ]);
+    setChartArgs3([
+      'myChart14',
+      'bar',
+      ...calc_daily_chart_data_group_by_categories(csv, '_', true),
+    ]);
   };
 
   return (
     <div>
-      <StackedBarChart args={chartArgs} />
+      <BarChart args={chartArgs1} />
+      <StackedBarChart args={chartArgs2} />
+      <StackedBarChart args={chartArgs3} />
       <ApiFetch callback={(data) => onLoadData(data)} />
     </div>
   );
@@ -103,6 +116,39 @@ function extract_categories_from_all_history(
   return ['pigeon', 'megu', 'trio2', ...categories];
 }
 
+function parse_date(date_string : string) {
+  var tokens = date_string.split("/");
+  return new Date(Number(tokens[0]), Number(tokens[1]) - 1, Number(tokens[2]));
+}
+
+// -----------------------------------------------------------
+// [calc_chart_data] 日別集計（累計可・期間指定可）
+
+// markdown データから、グラフ描画用の系列を取得
+// [parameter] date_from: 日付("YYYY/DD/MM" 形式)
+function calc_daily_chart_data_by_xpath(all_history: any[][], xpath : string, cumulative = false, date_from : string = null, date_to : string = null) {
+  var labels = all_history.map(arr => (arr[0].getMonth() + 1) + "/" + arr[0].getDate());
+  var data = all_history.map(arr => get_value_by_xpath_or_default(arr[1], xpath))
+  var sum3 = 0;
+
+  // 期間を date_from 以降に制限
+  if (date_from != null) {
+    var fuyu_from = parse_date(date_from);
+    var fuyu_ids = all_history.map((x, i) => i).filter(i => all_history[i][0] >= fuyu_from);
+    if (date_to != null) {
+      var fuyu_to = parse_date(date_to);
+      fuyu_ids = fuyu_ids.filter(i => all_history[i][0] <= fuyu_to);
+    }
+
+    labels = fuyu_ids.map(i => labels[i]);
+    data = fuyu_ids.map(i => data[i]);
+  }
+
+  data = data.map(x => Math.round((sum3 = sum3 * (!!cumulative ? 1 : 0) + (x as number)) / 60 * 100) / 100);
+
+  return [labels, data];
+}
+
 // -----------------------------------------------------------
 // [calc_chart_data] カテゴリ別日別集計系（累計可）
 
@@ -110,7 +156,6 @@ function calc_daily_chart_data_group_by_categories(
   all_history: any[][],
   xpath: string,
   cumulative = false,
-  date_from: Date = null,
 ) {
   const labels = all_history.map(
     (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
