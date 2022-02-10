@@ -14,7 +14,7 @@ function Hello(): JSX.Element {
     // setRawMarkdown(markdown);
     const csv = find_all_history_with_date(markdown);
     const labels = csv.map(
-      (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
+      (arr) => `${(arr[0] as Date).getMonth() + 1}/${(arr[0] as Date).getDate()}`,
     );
     // const data = csv.map(arr => get_value_by_xpath_or_default(arr[1], "_"))
     setChartArgs1([
@@ -134,7 +134,7 @@ function calc_daily_chart_data_by_xpath(
   date_to: string = null,
 ) {
   let labels = all_history.map(
-    (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
+    (arr) => `${(arr[0] as Date).getMonth() + 1}/${(arr[0] as Date).getDate()}`,
   );
   let data = all_history.map((arr) => get_value_by_xpath_or_default(arr[1] as any[][], xpath));
   let sum3 = 0;
@@ -172,7 +172,7 @@ function calc_daily_chart_data_group_by_categories(
   cumulative = false,
 ) {
   const labels = all_history.map(
-    (arr) => `${arr[0].getMonth() + 1}/${arr[0].getDate()}`,
+    (arr) => `${(arr[0] as Date).getMonth() + 1}/${(arr[0] as Date).getDate()}`,
   );
   let sum3 = 0;
 
@@ -185,7 +185,9 @@ function calc_daily_chart_data_group_by_categories(
   data_arr = data_arr.map((data) => {
     sum3 = 0;
     return data.map(
-      (x) => Math.round(((sum3 = sum3 * (cumulative ? 1 : 0) + x) / 60) * 100) / 100,
+      (x) => Math.round(
+        ((sum3 = sum3 * (cumulative ? 1 : 0) + (x as number)) / 60) * 100,
+      ) / 100,
     );
   });
 

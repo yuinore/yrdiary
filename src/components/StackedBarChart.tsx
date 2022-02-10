@@ -52,9 +52,10 @@ function StackedBarChart(props: {
 
   const data2 = [
     ['', ...series_label],
-    ...transpose_table(data_arr as number[][]).map(
-      (d: number[], i: number) => [labels[i], ...d],
-    ),
+    ...transpose_table(data_arr as number[][]).map((d: number[], i: number) => [
+      labels[i],
+      ...d,
+    ]),
   ];
 
   return (
