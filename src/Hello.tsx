@@ -36,6 +36,7 @@ function Hello(): JSX.Element {
 
   return (
     <div>
+      <h1>yrdiary</h1>
       <BarChart args={chartArgs1} />
       <StackedBarChart args={chartArgs2} />
       <StackedBarChart args={chartArgs3} />
