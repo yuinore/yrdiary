@@ -3,7 +3,6 @@ import { Chart } from 'react-google-charts';
 import ApiFetch from './components/ApiFetch';
 import BarChart from './components/BarChart';
 import StackedBarChart from './components/StackedBarChart';
-import ApexStackedBarChart from './components/ApexStackedBarChart';
 import ChartArgs from './models/ChartArgs';
 
 function Hello(): JSX.Element {
@@ -37,8 +36,6 @@ function Hello(): JSX.Element {
       ...calc_period_chart_data_group_by_none(csv, '_', month_mapper),
     ]);
   };
-
-  // <ApexStackedBarChart chartArgs={new ChartArgs(chartArgs2)} />
 
   return (
     <div>
