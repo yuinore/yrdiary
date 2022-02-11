@@ -17,7 +17,7 @@ export const options = {
   },
   isStacked: true,
   colors: [
-    '#f85555',
+    '#f87777',
     '#f89922',
     '#f8d000',
     '#44cc55',
