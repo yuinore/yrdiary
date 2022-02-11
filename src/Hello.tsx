@@ -4,6 +4,7 @@ import ApiFetch from './components/ApiFetch';
 import BarChart from './components/BarChart';
 import StackedBarChart from './components/StackedBarChart';
 import ChartArgs from './models/ChartArgs';
+import Page from './components/Page';
 
 function Hello(): JSX.Element {
   const [chartArgs1, setChartArgs1] = useState([]);
@@ -40,6 +41,7 @@ function Hello(): JSX.Element {
   return (
     <div>
       <h1>yrdiary</h1>
+      <Page />
       <BarChart args={chartArgs1} />
       <StackedBarChart args={chartArgs2} />
       <StackedBarChart args={chartArgs3} />
