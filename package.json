@@ -23,6 +23,7 @@
     "apexcharts": "^3.33.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
+    "echarts-for-react": "^3.0.2",
     "eslint": "^8.8.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.3.0",
