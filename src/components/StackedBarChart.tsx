@@ -31,6 +31,14 @@ export const options = {
   ],
   showToolTip: true,
 
+  /*
+          explorer: {
+            axis: 'horizontal',
+            keepInBounds: true,
+            maxZoomIn: 16.0
+
+          },
+  */
   bar: { groupWidth: '85%' },
   legend: { position: 'top' },
 };
@@ -50,6 +58,7 @@ function StackedBarChart(props: {
   if (labels === undefined) {
     return <div />;
   }
+  // const labels = labels_.map(x => "2021-" + x.split("/").map(x => String(x).padStart(2, '0')).join("-") + "T00:00:00.000Z").map(x => (console.log(x), new Date(Date.parse(x)));
 
   const data2 = [
     ['', ...series_label],

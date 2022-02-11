@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
+import ChartArgs from '../models/ChartArgs';
 
 const CHART_FILL_COLORS = [
   '#f85555',
@@ -15,34 +16,42 @@ const CHART_FILL_COLORS = [
   '#666666',
 ];
 
-class ApexStackedBarChart extends React.Component {
+class ApexStackedBarChart extends React.Component<{ chartArgs: ChartArgs }, any> {
+  private chartId: string;
+
   constructor(props) {
     super(props);
 
-    const chartId = `chart_${Math.random().toString(36).substring(2)}`;
+    this.chartId = `chart_${Math.random().toString(36).substring(2)}`;
+
+  }
+
+  render() {
+console.log(this.props.chartArgs);
+    if(!this.props.chartArgs.labels) return <div />;
+
+
+
+
+
+    const { chartArgs } = this.props;
+
+    //chartArgs.dataArr = transpose_table(chartArgs.dataArr);
+
+
+
+const series_data =  chartArgs && chartArgs.seriesLabels && chartArgs.seriesLabels.map((x, i) => ({name: x, data: chartArgs.dataArr[i]}));
+
+const categories_labels =            chartArgs && chartArgs.labels && chartArgs.labels.map(x => "2021-" + x.split("/").map(x => String(x).padStart(2, '0')).join("-") + "T00:00:00.000Z").map(x => (console.log(x), Date.parse(x));
+
+console.log(series_data);
+console.log(categories_labels);
 
     this.state = {
-      series: [
-        {
-          name: 'PRODUCT A',
-          data: [44, 55, 41, 67, 22, 43],
-        },
-        {
-          name: 'PRODUCT B',
-          data: [13, 23, 20, 8, 13, 27],
-        },
-        {
-          name: 'PRODUCT C',
-          data: [11, 17, 15, 15, 21, 14],
-        },
-        {
-          name: 'PRODUCT D',
-          data: [21, 7, 25, 13, 22, 8],
-        },
-      ],
+      series: series_data, 
       options: {
         chart: {
-          id: `${chartId}_bar`,
+          id: `${this.chartId}_bar`,
           stacked: true,
           animations: { enabled: true },
           toolbar: { show: false },
@@ -54,14 +63,7 @@ class ApexStackedBarChart extends React.Component {
         },
         xaxis: {
           type: 'datetime',
-          categories: [
-            new Date('12/31/2010 GMT').getTime(),
-            new Date('01/01/2011 GMT').getTime(),
-            new Date('01/02/2011 GMT').getTime(),
-            new Date('01/03/2011 GMT').getTime(),
-            new Date('01/04/2011 GMT').getTime(),
-            new Date('01/05/2011 GMT').getTime(),
-          ],
+          categories:  categories_labels          ,
           labels: {
             formatter: (value) => {
               return ((new Date(value)).getMonth() + 1) + "/" + (new Date(value)).getDate();
@@ -80,14 +82,14 @@ class ApexStackedBarChart extends React.Component {
       },
       optionsBrush: {
         chart: {
-          id: `${chartId}_brush`,
+          id: `${this.chartId}_brush`,
           stacked: true,
           animations: { enabled: true },
           toolbar: { show: false },
           selection: { enabled: true },
           brush: {
             enabled: true,
-            target: `${chartId}_bar`,
+            target: `${this.chartId}_bar`,
           },
         },
         stroke: {
@@ -95,14 +97,7 @@ class ApexStackedBarChart extends React.Component {
         },
         xaxis: {
           type: 'datetime',
-          categories: [
-            new Date('12/31/2010 GMT').getTime(),
-            new Date('01/01/2011 GMT').getTime(),
-            new Date('01/02/2011 GMT').getTime(),
-            new Date('01/03/2011 GMT').getTime(),
-            new Date('01/04/2011 GMT').getTime(),
-            new Date('01/05/2011 GMT').getTime(),
-          ],
+          categories:  categories_labels          ,
           labels: {
             formatter: (value) => {
               return ((new Date(value)).getMonth() + 1) + "/" + (new Date(value)).getDate();
@@ -114,9 +109,16 @@ class ApexStackedBarChart extends React.Component {
         colors: CHART_FILL_COLORS,
       },
     };
-  }
 
-  render() {
+
+
+
+
+
+
+
+
+
     return (
       <div>
         <div className="app">
@@ -146,6 +148,10 @@ class ApexStackedBarChart extends React.Component {
       </div>
     );
   }
+}
+
+function transpose_table(array: number[][]) {
+  return array[0].map((col, i) => array.map((row) => row[i]));
 }
 
 export default ApexStackedBarChart;

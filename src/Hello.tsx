@@ -4,6 +4,7 @@ import ApiFetch from './components/ApiFetch';
 import BarChart from './components/BarChart';
 import StackedBarChart from './components/StackedBarChart';
 import ApexStackedBarChart from './components/ApexStackedBarChart';
+import ChartArgs from './models/ChartArgs';
 
 function Hello(): JSX.Element {
   const [chartArgs1, setChartArgs1] = useState([]);
@@ -37,10 +38,11 @@ function Hello(): JSX.Element {
     ]);
   };
 
+  // <ApexStackedBarChart chartArgs={new ChartArgs(chartArgs2)} />
+
   return (
     <div>
       <h1>yrdiary</h1>
-      <ApexStackedBarChart />
       <BarChart args={chartArgs1} />
       <StackedBarChart args={chartArgs2} />
       <StackedBarChart args={chartArgs3} />
